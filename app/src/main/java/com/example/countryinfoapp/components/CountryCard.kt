@@ -22,8 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.CountryInfo
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.countryinfoapp.R
 
 @Composable
 fun CountryCard(countryInfo: CountryInfo) {
@@ -147,4 +148,23 @@ fun CountryCard(countryInfo: CountryInfo) {
         }
 
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CountryCardPreview() {
+    CountryCard(
+        countryInfo = CountryInfo(
+            flagId = R.drawable.us, // Using 'us.png' as a sample flag
+            "U.S.A",
+            "United States of America",
+            "D.C",
+            "North America",
+            "Northern America",
+            "$",
+            "United States Dollar",
+            "+1",
+            ".us"
+        )
+    )
 }

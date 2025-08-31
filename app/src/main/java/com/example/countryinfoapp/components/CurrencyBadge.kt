@@ -25,7 +25,7 @@ fun CurrencyBadge(text: String = "$") {
     var textSize by remember { mutableStateOf(IntSize.Companion.Zero) }
 
     Box(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .padding(2.dp)
             .onSizeChanged { textSize = it }
             .drawBehind {
@@ -39,12 +39,12 @@ fun CurrencyBadge(text: String = "$") {
                     center = Offset(this.size.width / 2f, this.size.height / 2f)
                 )
             },
-        contentAlignment = Alignment.Companion.Center
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             fontSize = 12.sp,
-            textAlign = TextAlign.Companion.Center,
+            textAlign = TextAlign.Center,
         )
     }
 }

@@ -58,10 +58,10 @@ fun GreetingPreview() {
     // For simplicity, let's create a new one here.
     val sampleInfo = CountryInfo(
         R.drawable.us, // Assuming you have a drawable named 'us'
-        "United States",
-        "Washington, D.C.",
+        "U.S.A",
         "United States of America",
-        "Americas",
+        "D.C",
+        "North America",
         "Northern America",
         "$",
         "United States Dollar",
