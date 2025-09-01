@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,39 +15,36 @@ import com.example.countryinfoapp.components.CountryCard
 import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.CountryInfo
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
+import com.example.countryinfoapp.util.getCountryList
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
-    private val usaInfo = CountryInfo(
-        R.drawable.us,
-        "United States",
-        "Washington, D.C.",
-        "United States of America",
-        "Americas",
-        "Northern America",
-        "$",
-        "United States Dollar",
-        "+1",
-        ".us"
-    )
+    private val countries= getCountryList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
         setContent {
-            CountryCardWithConstraintLayout(usaInfo)
+           MainScreen(countries)
         }
     }
 }
 
 
 @Composable
-fun MainScreen(countryInfo: CountryInfo) {
+fun MainScreen(countries: List<CountryInfo>) {
     CountryInfoAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.surface
         ) {
-            CountryCard(countryInfo)
+            LazyColumn {
+                items(countries) {
+                    CountryCardWithConstraintLayout(it)
+
+                }
+            }
+
         }
     }
 }
@@ -69,5 +68,5 @@ fun GreetingPreview() {
         "+1",
         ".us"
     )
-    CountryCardWithConstraintLayout(sampleInfo)
+    MainScreen(getCountryList())
 }

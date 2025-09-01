@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.CountryInfo
 
@@ -52,27 +53,31 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }
-                    .width(80.dp)
+                    .width(100.dp)
                     .height(50.dp)
             )
 
             Text(
                 text = countryInfo.commonName,
-                fontSize = 20.sp,
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.constrainAs(commonName) {
                     top.linkTo(flagImage.bottom, margin = 4.dp)
                     start.linkTo(flagImage.start)
                     end.linkTo(flagImage.end)
+                    width = Dimension.fillToConstraints // ✅ This is the key fix
                 }
             )
 
             Text(
                 text = countryInfo.officialName,
+                textAlign = TextAlign.Center,
                 fontSize = 15.sp,
                 modifier = Modifier.constrainAs(officialName) {
                     top.linkTo(commonName.bottom, margin = 2.dp)
                     start.linkTo(commonName.start)
                     end.linkTo(commonName.end)
+                    width = Dimension.fillToConstraints
                 }
             )
 
@@ -102,39 +107,40 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
                     .fillMaxWidth(0.75f) // Adjust fraction as needed
             )
 
+// America
             Text(
                 text = countryInfo.subRegion,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .constrainAs(subRegionText) {
-                        top.linkTo(regionText.bottom, margin = 2.dp)
+                        top.linkTo(regionText.bottom, margin = 4.dp)
                         start.linkTo(regionText.start)
                         end.linkTo(regionText.end)
                     }
-                    .fillMaxWidth(0.75f) // Adjust fraction as needed
             )
 
             CurrencyBadge(
                 text = countryInfo.currencySymbol,
-                modifier = Modifier.constrainAs(currencySymbolBadge) {
-                    top.linkTo(subRegionText.bottom, margin = 8.dp)
-                    start.linkTo(subRegionText.start)
-//                    start.linkTo(flagImage.end, margin = 8.dp)
-//                    bottom.linkTo(parent.bottom, margin = 8.dp)
+                modifier = Modifier
+                    .constrainAs(currencySymbolBadge) {
+                        // Align to the baseline of the currency name
+                        baseline.linkTo(currencyNameText.baseline)
+                        // Place it right next to the left of currency name
+                        end.linkTo(currencyNameText.start, margin = 10.dp)
                 }
             )
 
+// US Dollar
             Text(
                 text = countryInfo.currencyName,
                 fontSize = 12.sp,
-                textAlign = TextAlign.Start,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .constrainAs(currencyNameText) {
-                        top.linkTo(currencySymbolBadge.top)
-                        bottom.linkTo(currencySymbolBadge.bottom)
-                        start.linkTo(currencySymbolBadge.end, margin = 4.dp)
-                        end.linkTo(mobileCodeText.start, margin = 4.dp)
+                        top.linkTo(subRegionText.bottom, margin = 4.dp)
+                        start.linkTo(subRegionText.start) // match subRegion
+                        end.linkTo(subRegionText.end)
                     }
             )
 
@@ -143,7 +149,7 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
                 fontSize = 12.sp,
                 textAlign = TextAlign.End,
                 modifier = Modifier.constrainAs(mobileCodeText) {
-                    top.linkTo(currencySymbolBadge.top)
+                    baseline.linkTo(currencyNameText.baseline)
                     end.linkTo(parent.end)
                 }
             )
@@ -153,10 +159,12 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
                 fontSize = 12.sp,
                 textAlign = TextAlign.End,
                 modifier = Modifier.constrainAs(tldText) {
-                    top.linkTo(mobileCodeText.bottom)
+                    top.linkTo(mobileCodeText.bottom,)
                     end.linkTo(parent.end)
                 }
             )
+
+
         }
     }
 }
@@ -167,13 +175,13 @@ fun CountryCardWithConstraintLayoutPreview() {
     CountryCardWithConstraintLayout(
         countryInfo = CountryInfo(
             R.drawable.us, // Assuming you have a drawable named 'us'
-            "U.S.A",
             "United States of America",
+            "United States ",
             "D.C",
             "North America",
             "America",
             "$",
-            "US. Dollar Dollar",
+            "US.Dollar",
             "+1",
             ".us"
         )
