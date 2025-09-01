@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.countryinfoapp.components.CountryCard
+import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.CountryInfo
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
         setContent {
-            MainScreen(usaInfo)
+            CountryCardWithConstraintLayout(usaInfo)
         }
     }
 }
@@ -62,11 +63,11 @@ fun GreetingPreview() {
         "United States of America",
         "D.C",
         "North America",
-        "Northern America",
+        "America",
         "$",
-        "United States Dollar",
+        "US. Dollar Dollar",
         "+1",
         ".us"
     )
-    MainScreen(sampleInfo)
+    CountryCardWithConstraintLayout(sampleInfo)
 }
