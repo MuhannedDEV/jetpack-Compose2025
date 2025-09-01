@@ -1,4 +1,4 @@
-package com.example.countryinfoapp.components
+package com.example.countryinfoapp.testcode
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -15,17 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.Guideline
 import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.CountryInfo
 
 @Composable
-fun Guidelines(countryInfo: CountryInfo) {
+fun Barriers(countryInfo: CountryInfo) {
     Surface(
         modifier = Modifier
             .fillMaxWidth(1.0f)
@@ -43,9 +41,6 @@ fun Guidelines(countryInfo: CountryInfo) {
             val imageResId = countryInfo.flagId
             val imagePainter = painterResource(id = imageResId)
 
-            var topGuideline = createGuidelineFromTop(2.dp)
-            var startGuideline = createGuidelineFromStart(2.dp)
-
 
 
             Image(
@@ -54,19 +49,22 @@ fun Guidelines(countryInfo: CountryInfo) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .constrainAs(flagImage) {
-                        top.linkTo(topGuideline)
-                        start.linkTo(startGuideline)
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
                     }
                     .width(80.dp)
                     .height(50.dp)
             )
+
+            var topBarrier = createTopBarrier(flagImage)
+            var startBarrier = createStartBarrier(flagImage)
 
             Text(
                 text = countryInfo.commonName,
                 fontSize = 20.sp,
                 modifier = Modifier.constrainAs(commonName) {
                     top.linkTo(flagImage.bottom, margin = 4.dp)
-                    start.linkTo(flagImage.start)
+                    start.linkTo(startBarrier)
                     end.linkTo(flagImage.end)
                 }
             )
@@ -75,9 +73,9 @@ fun Guidelines(countryInfo: CountryInfo) {
                 text = countryInfo.officialName,
                 fontSize = 15.sp,
                 modifier = Modifier.constrainAs(officialName) {
-                    top.linkTo(commonName.bottom, margin = 2.dp)
-                    start.linkTo(commonName.start)
-                    end.linkTo(commonName.end)
+                    top.linkTo(topBarrier, margin = 2.dp)
+                    start.linkTo(startBarrier)
+                    end.linkTo(flagImage.end)
                 }
             )
 
@@ -87,8 +85,8 @@ fun Guidelines(countryInfo: CountryInfo) {
 
 @Preview(showBackground = true)
 @Composable
-fun GuidelinesLayout() {
-    Guidelines(
+fun BarrierLayout() {
+    Barriers(
         countryInfo = CountryInfo(
             R.drawable.us, // Assuming you have a drawable named 'us'
             "U.S.A",

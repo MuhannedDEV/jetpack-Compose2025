@@ -1,4 +1,4 @@
-package com.example.countryinfoapp.components
+package com.example.countryinfoapp.testcode
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.countryinfoapp.R
+import com.example.countryinfoapp.components.CurrencyBadge
 import com.example.countryinfoapp.data.CountryInfo
 
 @Composable

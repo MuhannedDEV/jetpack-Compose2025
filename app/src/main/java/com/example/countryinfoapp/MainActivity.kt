@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.countryinfoapp.components.CountryCard
-import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
+import com.example.countryinfoapp.testcode.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.CountryInfo
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 

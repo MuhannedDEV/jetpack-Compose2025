@@ -1,10 +1,12 @@
-package com.example.countryinfoapp.components
+package com.example.countryinfoapp.testcode
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ChainStyle
 
 @Composable
 fun TestComposable() {
@@ -105,9 +109,90 @@ fun ConstraintWithGuidelinesExample() {
     }
 }
 
+@Composable
+fun ConstraintWithBarrierExample() {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .padding(16.dp)
+    ) {
+        val (flag, countryName, officialName) = createRefs()
+
+        // This barrier will take the END of the widest between flag and countryName
+        val startBarrier = createEndBarrier(flag, countryName)
+
+        // Flag Box (simulate a flag)
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .background(Color.Red)
+                .constrainAs(flag) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                }
+        )
+
+        // Country name (below the flag)
+        Text(
+            text = "USA",
+            fontSize = 18.sp,
+            modifier = Modifier.constrainAs(countryName) {
+                top.linkTo(flag.bottom, margin = 8.dp)
+                start.linkTo(flag.start) // align with flag
+            }
+        )
+
+        // Official name should start AFTER the widest of (flag, India)
+        Text(
+            text = "United States Of America",
+            fontSize = 16.sp,
+            modifier = Modifier.constrainAs(officialName) {
+                top.linkTo(parent.top)
+                start.linkTo(startBarrier, margin = 8.dp)
+            }
+        )
+    }
+}
+
+@Composable
+fun ChainLayoutExample() {
+    ConstraintLayout(
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    ) {
+        val (start, middle, end) = createRefs()
+
+        // Create a horizontal chain
+        createHorizontalChain(start, middle, end, chainStyle = ChainStyle.Packed)
+
+        Text(
+            text = "Start",
+            modifier = Modifier.constrainAs(start) {
+                top.linkTo(parent.top)
+            }
+        )
+
+        Text(
+            text = "Middle",
+            modifier = Modifier.constrainAs(middle) {
+                top.linkTo(parent.top)
+            }
+        )
+
+        Text(
+            text = "End",
+            modifier = Modifier.constrainAs(end) {
+                top.linkTo(parent.top)
+            }
+        )
+    }
+
+}
+
+
 
     @Preview(showBackground = true)
     @Composable
     fun TestComposablePreview() {
-        ConstraintWithGuidelinesExample()
+        ChainLayoutExample()
     }
