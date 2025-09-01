@@ -70,8 +70,44 @@ fun TestConstraintLayout() {
 
     }
 
+@Composable
+fun ConstraintWithGuidelinesExample() {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        // 🔹 Create a vertical guideline at 40% from start
+        val startGuideline = createGuidelineFromStart(0.4f)
+
+        // 🔸 Create references for each text
+        val (name, email, office, location) = createRefs()
+
+        Text("Name", Modifier.constrainAs(name) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+        })
+
+        Text("Email", Modifier.constrainAs(email) {
+            top.linkTo(name.bottom, margin = 8.dp)
+            start.linkTo(parent.start)
+        })
+
+        Text("Office", Modifier.constrainAs(office) {
+            top.linkTo(parent.top)
+            start.linkTo(startGuideline) // 🟢 aligns to guideline
+        })
+
+        Text("Location", Modifier.constrainAs(location) {
+            top.linkTo(office.bottom, margin = 8.dp)
+            start.linkTo(startGuideline) // 🟢 aligns to guideline
+        })
+    }
+}
+
+
     @Preview(showBackground = true)
     @Composable
     fun TestComposablePreview() {
-        TestConstraintLayout()
+        ConstraintWithGuidelinesExample()
     }
