@@ -1,6 +1,7 @@
 package com.example.countryinfoapp
 
 import android.os.Bundle
+import android.util.Log // Added Log import
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,21 +12,45 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.countryinfoapp.components.CountryCard
 import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
+import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.data.CountryInfo
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 import com.example.countryinfoapp.util.getCountryList
+import com.example.countryinfoapp.util.getCountryListFromJson
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
-    private val countries= getCountryList()
+    private val countries = getCountryList()
+    private val usaInfo by lazy { getCountryListFromJson(this) } // Changed to by lazy
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
         setContent {
-           MainScreen(countries)
+            MainScreen(countries)
+        }
+        printUsaInfo()
+    }
+
+    private fun printUsaInfo() {
+        Log.d(TAG, "USA Info Size: ${usaInfo.size}")
+        if (usaInfo.isNotEmpty()) {
+            Log.d(TAG, "USA Info (First Item):")
+            val firstCountry = usaInfo[0] // Assuming usaInfo contains at least one country, as per common use cases
+            Log.d(TAG, "Common Name: ${firstCountry.name?.common}")
+            Log.d(TAG, "Official Name: ${firstCountry.name?.official}")
+            Log.d(TAG, "Capital: ${firstCountry.capital?.joinToString()}")
+            Log.d(TAG, "Region: ${firstCountry.region}")
+            Log.d(TAG, "Subregion: ${firstCountry.subregion}")
+            // Add more fields as needed, for example:
+            // firstCountry.currencies?.forEach { (code, currency) ->
+            //     Log.d(TAG, "Currency $code: ${currency.name} (${currency.symbol})")
+            // }
+            // Log.d(TAG, "IDD: ${firstCountry.idd?.root}${firstCountry.idd?.suffixes?.joinToString(\"\")}")
+            // Log.d(TAG, "TLD: ${firstCountry.tld?.joinToString()}")
+        } else {
+            Log.d(TAG, "USA Info is empty or not loaded yet.")
         }
     }
 }
@@ -41,10 +66,8 @@ fun MainScreen(countries: List<CountryInfo>) {
             LazyColumn {
                 items(countries) {
                     CountryCardWithConstraintLayout(it)
-
                 }
             }
-
         }
     }
 }

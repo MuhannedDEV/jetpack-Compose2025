@@ -1,7 +1,10 @@
 package com.example.countryinfoapp.util
 
+import android.content.Context
 import com.example.countryinfoapp.R
+import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.data.CountryInfo
+import kotlinx.serialization.json.Json // Added import for Json
 
 fun getCountryList(): MutableList<CountryInfo> {
     val countryList = mutableListOf<CountryInfo>()
@@ -16,7 +19,7 @@ fun getCountryList(): MutableList<CountryInfo> {
             "Indian Rupee",
             "+91",
             ".in")
-    );
+    ) // Removed redundant semicolon
 
     countryList.add(
         CountryInfo(
@@ -126,4 +129,16 @@ fun getCountryList(): MutableList<CountryInfo> {
 
 
     return countryList
+}
+
+fun getJsonString(context: Context): String {
+    val inputStream = context.resources.openRawResource(R.raw.countries)
+    return inputStream.bufferedReader().use {
+        it.readText()
+    }
+}
+
+fun getCountryListFromJson(context: Context): MutableList<Country> {
+    val jsonStringFromRaw = getJsonString(context)
+    return Json { ignoreUnknownKeys = true }.decodeFromString<List<Country>>(jsonStringFromRaw).toMutableList()
 }

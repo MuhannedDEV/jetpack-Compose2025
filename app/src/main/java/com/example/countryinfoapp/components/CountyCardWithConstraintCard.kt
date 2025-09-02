@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
 import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.CountryInfo
 
@@ -44,8 +45,8 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
             val imageResId = countryInfo.flagId
             val imagePainter = painterResource(id = imageResId)
 
-            Image(
-                painter = imagePainter,
+            AsyncImage(
+                model = countryInfo.flagId,
                 contentDescription = "Country Flag",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

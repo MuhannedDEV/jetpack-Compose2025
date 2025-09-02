@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23" // Added Kotlinx Serialization plugin
 }
 
 android {
@@ -52,7 +53,12 @@ dependencies {
     // ConstraintLayout for Compose
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation(libs.androidx.constraintlayout)
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Added Kotlinx Serialization dependency
     testImplementation(libs.junit)
+    testImplementation("org.mockito:mockito-core:5.11.0") // Added Mockito Core
+    testImplementation("org.mockito:mockito-junit-jupiter:5.11.0") // Added Mockito JUnit 5 (can be runner for JUnit 4)
+    // For Mockito with Kotlin, you might prefer: testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
