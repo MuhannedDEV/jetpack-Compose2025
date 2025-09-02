@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.Country
-// Removed individual data class imports as they are part of usaSampleData now
 import com.example.countryinfoapp.data.usaSampleData // Added import for shared sample data
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 import com.example.countryinfoapp.util.getCountryListFromJson
