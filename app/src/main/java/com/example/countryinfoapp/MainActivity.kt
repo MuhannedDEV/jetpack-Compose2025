@@ -9,87 +9,85 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+// Text import might be unused if MainScreen is simple, but often needed.
+// import androidx.compose.material3.Text 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+// Preview import might be unused in the final MainActivity, but good to keep if you add previews.
+// import androidx.compose.ui.tooling.preview.Preview 
+import androidx.lifecycle.lifecycleScope
 import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.Country // Assuming Country is the type from JSON
-import com.example.countryinfoapp.data.CountryInfo // Original type for getCountryList()
+// CountryInfo import might be unused if not directly used in MainActivity.
+// import com.example.countryinfoapp.data.CountryInfo 
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
-import com.example.countryinfoapp.util.getCountryList // For preview or if still used
+// getCountryList import might be unused if only getCountryListFromJson is used.
+// import com.example.countryinfoapp.util.getCountryList 
 import com.example.countryinfoapp.util.getCountryListFromJson
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
-    private lateinit var countries: List<Country> // Changed to lateinit var
+    // Use State for Compose to observe changes and trigger recomposition
+    private var countries by mutableStateOf<List<Country>>(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        countries = getCountryListFromJson(applicationContext) // Initialized in onCreate
 
-//        enableEdgeToEdge()
+        // Launch a coroutine in the lifecycle scope to load data asynchronously
+        lifecycleScope.launch {
+            countries = getCountryListFromJson(applicationContext)
+            // If you need to log after loading, you can do it here or pass countries to a function
+            // printCountryInfoAfterLoading() 
+        }
+
+//        enableEdgeToEdge() // If you have this function for edge-to-edge display
         setContent {
-            // Assuming MainScreen now takes List<Country>
+            // MainScreen will recompose when 'countries' state changes
             MainScreen(countries)
         }
-        printCountryInfo() // Renamed for clarity, using 'countries'
     }
 
-    private fun printCountryInfo() {
+    // Optional: If you want to log details after loading
+    @Suppress("unused") // Suppress if not immediately used to avoid warnings
+    private fun printCountryInfoAfterLoading() {
         Log.d(TAG, "Countries List Size: ${countries.size}")
-//        if (countries.isNotEmpty()) {
-//            countries.forEachIndexed { index, country ->
-//                Log.d(TAG, "Country #${index + 1}:")
-//                Log.d(TAG, "  Common Name: ${country.name?.common}")
-//                Log.d(TAG, "  Official Name: ${country.name?.official}")
-//                Log.d(TAG, "  Capital: ${country.capital?.joinToString()}")
-//                Log.d(TAG, "  Region: ${country.region}")
-//                Log.d(TAG, "  Subregion: ${country.subregion}")
-//                Log.d(TAG, "  Flag: ${country.flags}") // This will show the raw Flags object or null
-//                // If you want to check a specific property of flags, e.g., png:
-//                // Log.d(TAG, "  Flag PNG URL: ${country.flags?.png}")
-//            }
-//        } else {
-//            Log.d(TAG, "Countries list is empty or not loaded yet.")
-//        }
+        if (countries.isNotEmpty()) {
+            countries.forEachIndexed { index, country ->
+                Log.d(TAG, "Country #${index + 1}:")
+                Log.d(TAG, "  Common Name: ${country.name?.common}")
+                Log.d(TAG, "  Official Name: ${country.name?.official}")
+                Log.d(TAG, "  Capital: ${country.capital?.joinToString()}")
+                Log.d(TAG, "  Region: ${country.region}")
+                Log.d(TAG, "  Subregion: ${country.subregion}")
+                Log.d(TAG, "  Flag PNG URL: ${country.flags?.png}")
+            }
+        } else {
+            Log.d(TAG, "Countries list is empty.")
+        }
     }
 }
 
 
 @Composable
-fun MainScreen(countries: List<Country>) { // Changed to List<Country>
+fun MainScreen(countries: List<Country>) { // Receives the state-managed list
     CountryInfoAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.surface
         ) {
+            if (countries.isEmpty()) {
+                // Optional: Show a loading indicator or empty state message
+                // For now, it will just be an empty LazyColumn
+            }
             LazyColumn {
-                items(countries) { country -> // item is now 'Country'
-                    CountryCardWithConstraintLayout(country) // Pass 'Country' object
+                items(countries) { country -> 
+                    CountryCardWithConstraintLayout(country)
                 }
             }
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    // Preview currently uses getCountryList() which returns List<CountryInfo>
-    // If MainScreen expects List<Country>, this preview needs adjustment
-    // or a different preview that mocks List<Country>.
-    // For now, to make it compile, MainScreen in preview might need to be different
-    // or we create sample Country data.
-    // Let's use getCountryList() for now, and assume you'll adapt the preview if needed.
-    val sampleCountryInfoList = getCountryList() // Returns List<CountryInfo>
-    // This preview will likely have issues if MainScreen strictly expects List<Country>
-    // and CountryCardWithConstraintLayout expects Country.
-    // A proper fix would be to mock List<Country> for the preview.
-    // For simplicity, I'm commenting out the preview call to avoid type conflicts here.
-    // MainScreen(getCountryList()) // This would cause a type mismatch if MainScreen expects List<Country>
-
-    // Placeholder for preview:
-    Text("Preview not fully configured for List<Country>")
 }
