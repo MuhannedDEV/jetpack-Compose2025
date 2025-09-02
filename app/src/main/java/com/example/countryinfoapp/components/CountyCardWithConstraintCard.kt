@@ -120,14 +120,13 @@ fun CountryCardWithConstraintLayout(countryInfo: CountryInfo) {
                     }
             )
 
+            val leftColumnEnd = createEndBarrier(flagImage, commonName, officialName)
             CurrencyBadge(
                 text = countryInfo.currencySymbol,
                 modifier = Modifier
                     .constrainAs(currencySymbolBadge) {
-                        // Align to the baseline of the currency name
                         baseline.linkTo(currencyNameText.baseline)
-                        // Place it right next to the left of currency name
-                        end.linkTo(currencyNameText.start, margin = 10.dp)
+                        start.linkTo(leftColumnEnd, margin = 50.dp)
                 }
             )
 
