@@ -24,6 +24,11 @@ import coil.compose.AsyncImage
 import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.data.CountryInfo
+import com.example.countryinfoapp.data.Currency // Added import
+import com.example.countryinfoapp.data.Flags    // Added import
+import com.example.countryinfoapp.data.Idd      // Added import
+import com.example.countryinfoapp.data.Name     // Added import
+import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme // Added import
 
 @Composable
 fun CountryCardWithConstraintLayout(countryInfo: Country) {
@@ -44,7 +49,7 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
 
             countryInfo?.let {
                 AsyncImage(
-                    model = it.flags?.png,
+                    model = it.flags?.png, // This will now use the android.resource URI for local drawables
                     contentDescription = it?.flag,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -71,7 +76,7 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
                 )
             }
 
-            countryInfo.capital?.get(0)?.let {
+            countryInfo.capital?.getOrNull(0)?.let { // Used getOrNull for safety
                 Text(
                     text = it,
                     textAlign = TextAlign.Center,
@@ -115,73 +120,92 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
             )
         }
 
-
-// America
-            countryInfo?.subregion?.let {
-                Text(
-                    text = it,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .constrainAs(subRegionText) {
-                            top.linkTo(regionText.bottom, margin = 4.dp)
-                            start.linkTo(regionText.start)
-                            end.linkTo(regionText.end)
-                        }
-                )
-            }
-
-            countryInfo?.currencies?.entries?.first()?.let {
-                val leftColumnEnd = createEndBarrier(flagImage, commonName, officialName)
-                CurrencyBadge(
-                    text = it.value.symbol.toString(),
-                    modifier = Modifier
-                        .constrainAs(currencySymbolBadge) {
-                            baseline.linkTo(currencyNameText.baseline)
-                            start.linkTo(leftColumnEnd, margin = 50.dp)
-                        }
-                )
-            }
-
-// US Dollar
-            countryInfo?.currencies?.entries?.first()?.let {
-                Text(
-                    text = it.value.name.toString(),
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .constrainAs(currencyNameText) {
-                            top.linkTo(subRegionText.bottom, margin = 4.dp)
-                            start.linkTo(subRegionText.start) // match subRegion
-                            end.linkTo(subRegionText.end)
-                        }
-                )
-            }
-            countryInfo.idd?.let {
-                Text(
-                    text = it.root+""+it.suffixes?.get(0),
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.constrainAs(mobileCodeText) {
-                        baseline.linkTo(currencyNameText.baseline)
-                        end.linkTo(parent.end)
+        countryInfo?.subregion?.let {
+            Text(
+                text = it,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .constrainAs(subRegionText) {
+                        top.linkTo(regionText.bottom, margin = 4.dp)
+                        start.linkTo(regionText.start)
+                        end.linkTo(regionText.end)
                     }
-                )
-            }
-            countryInfo.tld?.get(0)?.let {
-                Text(
-                    text = it,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.constrainAs(tldText) {
-                        top.linkTo(mobileCodeText.bottom)
-                        end.linkTo(parent.end)
-                    }
-                )
-            }
-
-
+            )
         }
+
+        countryInfo?.currencies?.entries?.firstOrNull()?.let {
+            val leftColumnEnd = createEndBarrier(flagImage, commonName, officialName)
+            CurrencyBadge( // Assuming CurrencyBadge is an existing composable
+                text = it.value.symbol ?: "",
+                modifier = Modifier
+                    .constrainAs(currencySymbolBadge) {
+                        baseline.linkTo(currencyNameText.baseline)
+                        start.linkTo(leftColumnEnd, margin = 50.dp)
+                    }
+            )
+        }
+
+        countryInfo?.currencies?.entries?.firstOrNull()?.let {
+            Text(
+                text = it.value.name ?: "",
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .constrainAs(currencyNameText) {
+                        top.linkTo(subRegionText.bottom, margin = 4.dp)
+                        start.linkTo(subRegionText.start) 
+                        end.linkTo(subRegionText.end)
+                    }
+            )
+        }
+        countryInfo.idd?.let {
+            val suffix = it.suffixes?.getOrNull(0) ?: ""
+            Text(
+                text = (it.root ?: "") + suffix,
+                fontSize = 12.sp,
+                textAlign = TextAlign.End,
+                modifier = Modifier.constrainAs(mobileCodeText) {
+                    baseline.linkTo(currencyNameText.baseline)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
+        countryInfo.tld?.getOrNull(0)?.let {
+            Text(
+                text = it,
+                fontSize = 12.sp,
+                textAlign = TextAlign.End,
+                modifier = Modifier.constrainAs(tldText) {
+                    top.linkTo(mobileCodeText.bottom)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
+    }
+}
+}
+
+@Preview(showBackground = true, name = "Country Card Detailed Preview USA")
+@Composable
+fun CountryCardWithConstraintLayoutDetailedPreview() {
+    CountryInfoAppTheme {
+        CountryCardWithConstraintLayout(
+            countryInfo = Country(
+                name = Name(common = "United States", official = "United States of America"),
+                capital = listOf("Washington, D.C."),
+                region = "Americas",
+                subregion = "North America",
+                flags = Flags(
+                    png = "android.resource://com.example.countryinfoapp/drawable/us", 
+                    svg = null // Explicitly set svg to null
+                ),
+                flag = "Flag of the United States",
+                currencies = mapOf("USD" to Currency(name = "United States Dollar", symbol = "$")),
+                idd = Idd(root = "+1", suffixes = listOf()),
+                tld = listOf(".us")
+            )
+        )
     }
 }
 
