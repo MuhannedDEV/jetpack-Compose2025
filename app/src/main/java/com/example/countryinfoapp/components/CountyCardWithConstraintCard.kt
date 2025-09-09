@@ -1,11 +1,14 @@
 package com.example.countryinfoapp.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +34,6 @@ import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme // Added import
 
 @Composable
 fun CountryCardWithConstraintLayout(countryInfo: Country) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth(1.0f)
-            .padding(10.dp)
-            .wrapContentHeight(align = Alignment.Top)
-            .border(1.dp, Color.LightGray),
-        shadowElevation = 2.dp
-    ) {
         ConstraintLayout(
             modifier = Modifier
                 .padding(8.dp)
@@ -64,8 +59,7 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
             countryInfo.name?.common?.let {
                 Text(
                     text = it,
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.constrainAs(commonName) {
                         top.linkTo(flagImage.bottom, margin = 4.dp)
                         start.linkTo(flagImage.start)
@@ -79,7 +73,8 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
                 Text(
                     text = it,
                     textAlign = TextAlign.Center,
-                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.bodyMedium,
+
                     modifier = Modifier.constrainAs(officialName) {
                         top.linkTo(commonName.bottom, margin = 2.dp)
                         start.linkTo(commonName.start)
@@ -183,7 +178,6 @@ fun CountryCardWithConstraintLayout(countryInfo: Country) {
         }
     }
 }
-}
 
 @Preview(showBackground = true, name = "Country Card Detailed Preview USA")
 @Composable
@@ -196,7 +190,7 @@ fun CountryCardWithConstraintLayoutDetailedPreview() {
                 region = "Americas",
                 subregion = "North America",
                 flags = Flags(
-                    png = "android.resource://com.example.countryinfoapp/drawable/us", 
+                    png = "android.resource://com.example.countryinfoapp/drawable/us",
                     svg = null // Explicitly set svg to null
                 ),
                 flag = "Flag of the United States",

@@ -1,170 +1,31 @@
 package com.example.countryinfoapp.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.countryinfoapp.data.CountryInfo
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.countryinfoapp.R
+import com.example.countryinfoapp.data.Country
 
 @Composable
-fun CountryCard(countryInfo: CountryInfo) {
+fun CountryCard(countryInfo: Country) {
     Surface(
         modifier = Modifier
             .fillMaxWidth(1.0f)
             .padding(10.dp)
-            .wrapContentHeight(align = Alignment.Top)
-            .border(1.dp, Color.LightGray),
-        color = Color.Yellow,
-        shadowElevation = 2.dp
+            .wrapContentHeight(align = Alignment.Top),
+        shadowElevation = 2.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        shape = MaterialTheme.shapes.medium
     ) {
-        Row()
-        {
-            Column(
-                modifier = Modifier
-                    .weight(0.2f)
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(50.dp)
-                        .padding(2.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val imageResId = countryInfo.flagId
-                    val imagePainter = painterResource(id = imageResId)
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = "Country Flag",
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Text(
-                    text = countryInfo.commonName,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    fontSize = 20.sp
-                )
-                Text(
-                    text = countryInfo.officialName,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    fontSize = 15.sp
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 0.8f)
-                    .weight(0.8f)
-            ) {
-
-                Text(
-                    text = countryInfo.nationalCapital,
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .fillMaxWidth(fraction = 1.0f)
-                )
-
-                Text(
-                    text = countryInfo.region,
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .fillMaxWidth(fraction = 1.0f)
-                )
-
-                Text(
-                    text = countryInfo.subRegion,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .fillMaxWidth(fraction = 1.0f)
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(fraction = 1.0f),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CurrencyBadge(text = countryInfo.currencySymbol)
-
-                    Text(
-                        text = countryInfo.currencyName,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .fillMaxWidth(fraction = 0.4f)
-                    )
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(fraction = 0.3f),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Text(
-                            text = countryInfo.mobileCode,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth(fraction = 1.0f)
-                        )
-                        Text(
-                            text = countryInfo.tld,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth(fraction = 1.0f)
-                        )
-                    }
-
-
-                }
-            }
-
-        }
-
+        CountryCardWithConstraintLayout(countryInfo)
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CountryCardPreview() {
-    CountryCard(
-        countryInfo = CountryInfo(
-            flagId = R.drawable.us, // Using 'us.png' as a sample flag
-            "U.S.A",
-            "United States of America",
-            "D.C",
-            "North America",
-            "Northern America",
-            "$",
-            "United States Dollar",
-            "+1",
-            ".us"
-        )
-    )
 }

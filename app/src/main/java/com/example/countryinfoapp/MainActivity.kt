@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.countryinfoapp.components.CountryInfoAppScaffold
 import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.screen.MainScreen
+import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
+import com.example.countryinfoapp.ui.theme.MyCustomAppTheme
 import com.example.countryinfoapp.util.getCountryListFromJson
 import kotlinx.coroutines.launch
 
@@ -26,7 +28,9 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            CountryInfoAppScaffold(countries)
+            CountryInfoAppTheme(dynamicColor = false) {
+                CountryInfoAppScaffold(countries)
+            }
         }
     }
 

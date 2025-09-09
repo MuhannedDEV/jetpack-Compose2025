@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.countryinfoapp.components.CountryCard
 import com.example.countryinfoapp.components.CountryCardWithConstraintLayout
 import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.data.usaSampleData
@@ -26,7 +27,7 @@ fun MainScreen(countries: List<Country>, innerPadding: PaddingValues) {
         ) {
             LazyColumn {
                 items(countries) { country ->
-                    CountryCardWithConstraintLayout(country)
+                    CountryCard(country)
                 }
             }
         }
