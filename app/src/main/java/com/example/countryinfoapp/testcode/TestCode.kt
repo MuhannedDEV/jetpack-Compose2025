@@ -240,5 +240,5 @@ fun MyScreen() {
 @Preview(showBackground = true)
 @Composable
 fun TestComposablePreview() {
-    MyScreen()
+    ConstraintWithBarrierExample()
 }

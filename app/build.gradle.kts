@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23" // Added Kotlinx Serialization plugin
+    // Required for Room annotation processing (Room uses annotation processors to generate code for DAOs and database classes)
+    id("kotlin-kapt")
 }
 
 android {
@@ -57,6 +59,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Added Kotlinx Serialization dependency
+
+    // Room components
+    implementation(libs.androidx.room.runtime) // Room runtime: main library for Room database
+    implementation(libs.androidx.room.ktx) // Room KTX: provides Kotlin extensions for Room
+    kapt(libs.androidx.room.compiler) // Room compiler: annotation processor for generating Room code (used with kapt)
+
+    // Optional - Room testing
+    testImplementation("androidx.room:room-testing:2.6.1") // Room testing: utilities for testing Room databases
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.11.0") // Added Mockito Core
     testImplementation("org.mockito:mockito-junit-jupiter:5.11.0") // Added Mockito JUnit 5 (can be runner for JUnit 4)
