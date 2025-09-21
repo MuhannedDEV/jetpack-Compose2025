@@ -37,7 +37,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryInfoAppScaffold(countryList: List<Country>) {
+fun CountryInfoAppScaffold() {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -105,6 +105,6 @@ fun CountryInfoAppScaffold(countryList: List<Country>) {
             }
         }
     ) { innerPadding ->
-        MainScreen(countryList, innerPadding)
+        MainScreen( innerPadding)
     }
 }

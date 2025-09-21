@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.countryinfoapp.R
 import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.data.CountryInfo
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json // Added import for Json
 
 fun getCountryList(): MutableList<CountryInfo> {
@@ -140,5 +141,11 @@ fun getJsonString(context: Context): String {
 
 fun getCountryListFromJson(context: Context): MutableList<Country> {
     val jsonStringFromRaw = getJsonString(context)
+    return Json { ignoreUnknownKeys = true }.decodeFromString<List<Country>>(jsonStringFromRaw).toMutableList()
+}
+
+suspend fun getCountryLis(context: Context): MutableList<Country> {
+    val jsonStringFromRaw = getJsonString(context)
+    delay(2000) // Simulate network delay
     return Json { ignoreUnknownKeys = true }.decodeFromString<List<Country>>(jsonStringFromRaw).toMutableList()
 }

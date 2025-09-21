@@ -1,6 +1,6 @@
 package com.example.countryinfoapp.data
 
-data class CountryInfo(val flagId: Int,
+data class CountryInfo(var flagId: Int,
                        val commonName: String,
                        val nationalCapital: String,
                        val officialName: String,

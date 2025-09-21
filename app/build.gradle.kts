@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Added Kotlinx Serialization dependency
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
 
     // Room components
     implementation(libs.androidx.room.runtime) // Room runtime: main library for Room database
