@@ -1,5 +1,6 @@
 package com.example.countryinfoapp.components
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -48,6 +49,7 @@ fun CountryCardWithConstraintLayout(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
+                        Log.d("CountryCard", "Long pressed on ${countryInfo.name?.common}")
                         showDeleteAlertDialog.value = true
                         viewModel.selectedCountryForDeletion.value = countryInfo
                     }
