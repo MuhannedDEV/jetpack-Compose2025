@@ -36,5 +36,12 @@ class CountryRepository(private val context: Context, private val countryDao: Co
     }
 
 
+    //Delete one country from the database
+    suspend fun deleteCountry(country: Country) = withContext(Dispatchers.IO) {
+        countryDao.delete(country)
+        allCountries = countryDao.getAllCountries() // to refresh the list
+    }
+
+
 }
 

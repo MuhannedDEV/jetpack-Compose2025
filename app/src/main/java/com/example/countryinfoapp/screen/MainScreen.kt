@@ -14,13 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.countryinfoapp.components.CountryCard
+import com.example.countryinfoapp.components.MyAlertDialog
 import com.example.countryinfoapp.database.AppDataBase
 import com.example.countryinfoapp.repo.CountryRepository
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 import com.example.countryinfoapp.viewmodel.CountryViewModel
 import com.example.countryinfoapp.viewmodel.CountryViewModelFactory
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(innerPadding: PaddingValues) {
@@ -33,10 +36,15 @@ fun MainScreen(innerPadding: PaddingValues) {
         CountryRepository(context, it)
     }
     //Initialize the ViewModel
-     val viewModel: CountryViewModel = viewModel(factory = countryRepository?.let { CountryViewModelFactory(it) })
+    val viewModel: CountryViewModel =
+        viewModel(factory = countryRepository?.let { CountryViewModelFactory(it) })
 
     val countrylist = viewModel.allCountries.value
     val isLoading = viewModel.isLoading.value
+    val showDeleteAlertDialog = viewModel.showDeleteConfirmationDialog
+
+    //test to see if Dialog is working
+    //viewModel.showDeleteConfirmationDialog.value = true
 
     CountryInfoAppTheme {
         Surface(
@@ -51,10 +59,15 @@ fun MainScreen(innerPadding: PaddingValues) {
                         CircularProgressIndicator()
                     }
                 }
+
                 else -> {
                     LazyColumn {
                         items(countrylist) { country ->
-                            CountryCard(countryInfo = country)
+                            CountryCard(
+                                countryInfo = country,
+                                showDeleteAlertDialog = showDeleteAlertDialog,
+                                viewModel = viewModel
+                            )
                         }
                     }
                 }
@@ -62,6 +75,20 @@ fun MainScreen(innerPadding: PaddingValues) {
 
         }
     }
+
+    MyAlertDialog(
+        showDialog = showDeleteAlertDialog,
+        title = "Delete Confirmation",
+        message = "Do you want to delete this country?",
+        positiveAction = {
+            viewModel.viewModelScope.launch {
+                viewModel.deleteCountry()
+            }
+        },
+        dismissAction = {
+            viewModel.cancelDeleteProcess()
+        }
+    )
 }
 
 @Preview(showBackground = true, name = "Main Screen with USA Data")

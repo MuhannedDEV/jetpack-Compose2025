@@ -13,6 +13,9 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
     val allCountries: MutableState<List<Country>> = mutableStateOf(emptyList())
     val isLoading: MutableState<Boolean> = mutableStateOf(true)
 
+    val selectedCountryForDeletion: MutableState<Country?> = mutableStateOf(null)
+    val showDeleteConfirmationDialog: MutableState<Boolean> = mutableStateOf(false) // Added
+
     init {
         viewModelScope.launch {
             fetchAndInsertAll()
@@ -24,7 +27,7 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
           countryRepository.fetchAndInsertAll()
         }
         job.join()
-        getAllCountries() // Uncomment if you want to load countries immediately after fetching
+        getAllCountries()
         isLoading.value = false
     }
 
@@ -32,5 +35,25 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         allCountries.value = countryRepository.getAllCountries()
     }
 
+    // Call this when the user indicates they want to delete a specific country
+    fun initiateDeleteProcess(country: Country) {
+        selectedCountryForDeletion.value = country
+        showDeleteConfirmationDialog.value = true
+    }
 
+    // Call this when the user confirms the deletion in the dialog
+    suspend fun deleteCountry() {
+        selectedCountryForDeletion.value?.let { country ->
+           countryRepository.deleteCountry(country)
+        }
+        getAllCountries() // Refresh the list
+        selectedCountryForDeletion.value = null // Clear the selected country
+        showDeleteConfirmationDialog.value = false // Hide the dialog
+    }
+
+    // Call this when the user cancels the deletion or dismisses the dialog
+    fun cancelDeleteProcess() {
+        selectedCountryForDeletion.value = null
+        showDeleteConfirmationDialog.value = false
+    }
 }
