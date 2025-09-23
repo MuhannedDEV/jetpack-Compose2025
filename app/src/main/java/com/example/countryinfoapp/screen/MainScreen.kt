@@ -17,8 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.countryinfoapp.components.CountryCard
-import com.example.countryinfoapp.components.MyAlertDialog
+import com.example.countryinfoapp.dialog.MyAlertDialog
 import com.example.countryinfoapp.database.AppDataBase
+import com.example.countryinfoapp.dialog.MyNewAlertDialog
 import com.example.countryinfoapp.repo.CountryRepository
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme
 import com.example.countryinfoapp.viewmodel.CountryViewModel
@@ -43,8 +44,14 @@ fun MainScreen(innerPadding: PaddingValues) {
     val isLoading = viewModel.isLoading.value
     val showDeleteAlertDialog = viewModel.showDeleteConfirmationDialog
 
+    val showUpdateAlertDialog = viewModel.showUpdateDialogAlert
+    val selectedCountryGotUpdation = viewModel.selectedCountryForUpdation.value
+
     //test to see if Dialog is working
     //viewModel.showDeleteConfirmationDialog.value = true
+
+    //test to see if Dialog is working
+//    showUpdateAlertDialog.value = true
 
     CountryInfoAppTheme {
         Surface(
@@ -66,6 +73,7 @@ fun MainScreen(innerPadding: PaddingValues) {
                             CountryCard(
                                 countryInfo = country,
                                 showDeleteAlertDialog = showDeleteAlertDialog,
+                                showUpdateAlertDialog = showUpdateAlertDialog,
                                 viewModel = viewModel
                             )
                         }
@@ -96,6 +104,18 @@ fun MainScreen(innerPadding: PaddingValues) {
         },
         dismissAction = {
             viewModel.cancelDeleteProcess()
+        }
+    )
+
+    MyNewAlertDialog(
+        showDialog = showUpdateAlertDialog,
+        title = "Update Country Capital",
+        message = "Enter the new capital for the country",
+        currentCapital = selectedCountryGotUpdation?.capital ?.get(0) ?: "N/A",
+        positiveAction = { newCapital ->
+            viewModel.viewModelScope.launch {
+                viewModel.updateCountryItem(newCapital)
+            }
         }
     )
 }

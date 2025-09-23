@@ -19,6 +19,7 @@ import com.example.countryinfoapp.viewmodel.CountryViewModel
 @Composable
 fun CountryCard(countryInfo: Country,
                 showDeleteAlertDialog: MutableState<Boolean>,
+                showUpdateAlertDialog: MutableState<Boolean>,
                 viewModel: CountryViewModel
 ) {
     Surface(
@@ -31,6 +32,6 @@ fun CountryCard(countryInfo: Country,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         shape = MaterialTheme.shapes.medium
     ) {
-    CountryCardWithConstraintLayout(countryInfo, showDeleteAlertDialog, viewModel)
+    CountryCardWithConstraintLayout(countryInfo, showDeleteAlertDialog, showUpdateAlertDialog, viewModel)
     }
 }

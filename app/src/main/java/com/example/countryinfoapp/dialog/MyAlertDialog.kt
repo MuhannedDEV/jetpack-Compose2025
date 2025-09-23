@@ -1,4 +1,4 @@
-package com.example.countryinfoapp.components
+package com.example.countryinfoapp.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

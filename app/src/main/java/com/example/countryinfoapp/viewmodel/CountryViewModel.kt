@@ -9,12 +9,22 @@ import com.example.countryinfoapp.repo.CountryRepository
 import kotlinx.coroutines.launch
 
 class CountryViewModel(private val countryRepository: CountryRepository) : ViewModel() {
+    // Update the capital of a country using selectedCountryForUpdation and countryMutableState
+    suspend fun updateCountry(newCapital: String) {
+        selectedCountryForUpdation?.let { countryMutableState ->
+            countryMutableState.value?.let { country ->
+                countryRepository.updateCapital(country, newCapital)
+            }
+        }
+    }
 
     val allCountries: MutableState<List<Country>> = mutableStateOf(emptyList())
     val isLoading: MutableState<Boolean> = mutableStateOf(true)
 
-    val selectedCountryForDeletion: MutableState<Country?> = mutableStateOf(null)
+    var selectedCountryForDeletion: MutableState<Country?> = mutableStateOf(null)
+    var selectedCountryForUpdation: MutableState<Country?> = mutableStateOf(null)
     val showDeleteConfirmationDialog: MutableState<Boolean> = mutableStateOf(false) // Added
+    val showUpdateDialogAlert: MutableState<Boolean> = mutableStateOf(false) // Added
 
     init {
         viewModelScope.launch {
@@ -22,13 +32,15 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         }
     }
 
+    // IMPROVEMENT: Coroutine simplification and error handling should be done here in the ViewModel
     private suspend fun fetchAndInsertAll() {
-      val job = viewModelScope.launch {
-          countryRepository.fetchAndInsertAll()
+        try {
+            countryRepository.fetchAndInsertAll() // Direct call, no need for launch
+            getAllCountries()
+            isLoading.value = false
+        } catch (e: Exception) {
+            // Handle error, e.g., log or update error state for UI
         }
-        job.join()
-        getAllCountries()
-        isLoading.value = false
     }
 
     private suspend fun getAllCountries() {
@@ -56,4 +68,19 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         selectedCountryForDeletion.value = null
         showDeleteConfirmationDialog.value = false
     }
+
+    suspend fun updateCountryItem(newCapital: String) {
+        selectedCountryForUpdation?.let {
+            it.value?.let { country ->
+                countryRepository.updateCapital(country, newCapital)
+                getAllCountries() // Refresh the list
+            }
+        }
+        selectedCountryForUpdation.value = null // Clear the selected country
+        showUpdateDialogAlert.value = false // Hide the dialog
+
+
+
+    }
+
 }

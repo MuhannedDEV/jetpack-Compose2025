@@ -39,7 +39,9 @@ import com.example.countryinfoapp.viewmodel.CountryViewModel
 
 @Composable
 fun CountryCardWithConstraintLayout(
-    countryInfo: Country, showDeleteAlertDialog: MutableState<Boolean>,
+    countryInfo: Country,
+    showDeleteAlertDialog: MutableState<Boolean>,
+    showUpdateAlertDialog: MutableState<Boolean>,
     viewModel: CountryViewModel
 ) {
     ConstraintLayout(
@@ -48,6 +50,11 @@ fun CountryCardWithConstraintLayout(
             .fillMaxWidth()
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onDoubleTap = {
+                        Log.d("CountryCard", "Double tapped on ${countryInfo.name?.common}")
+                        viewModel.selectedCountryForUpdation.value = countryInfo
+                        showUpdateAlertDialog.value = true
+                    },
                     onLongPress = {
                         Log.d("CountryCard", "Long pressed on ${countryInfo.name?.common}")
                         showDeleteAlertDialog.value = true

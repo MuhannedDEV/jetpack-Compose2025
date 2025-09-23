@@ -7,6 +7,7 @@ import com.example.countryinfoapp.util.getCountryLis
 import com.example.countryinfoapp.util.getCountryList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 
 class CountryRepository(private val context: Context, private val countryDao: CountryDao) {
     private val contextForRepository = context.applicationContext
@@ -41,6 +42,18 @@ class CountryRepository(private val context: Context, private val countryDao: Co
         countryDao.delete(country)
         allCountries = countryDao.getAllCountries() // to refresh the list
     }
+
+
+    suspend fun updateCapital(country: Country, newCapital: String) =
+        withContext(Dispatchers.IO) {
+            val parsedString = "[\"$newCapital\"]"
+            val parsedArray = Json.decodeFromString<List<String>>(parsedString)
+            val updatedCountry = country.copy(capital = parsedArray)
+            updatedCountry.let {
+                countryDao.updateCountry(it)
+                allCountries = countryDao.getAllCountries() // to refresh the list
+            }
+        }
 
 
 }

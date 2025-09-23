@@ -27,6 +27,6 @@ interface CountryDao {
 
     // Update capital by id (not recommended to use List<String> for capital, but matching screenshot)
     @Query("UPDATE Country set capital = :capital where id = :id")
-    suspend fun updateCountry(capital: List<String>, id: Int): Int
+    suspend fun updateCountryCapital(capital: List<String>, id: Int): Int
 }
 
