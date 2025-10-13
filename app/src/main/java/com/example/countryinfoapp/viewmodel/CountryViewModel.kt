@@ -1,5 +1,6 @@
 package com.example.countryinfoapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,11 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
     var selectedCountryForUpdation: MutableState<Country?> = mutableStateOf(null)
     val showDeleteConfirmationDialog: MutableState<Boolean> = mutableStateOf(false) // Added
     val showUpdateDialogAlert: MutableState<Boolean> = mutableStateOf(false) // Added
+
+    var selectedFilter: MutableState<String?> =  mutableStateOf(null)
+    var filterByKey : MutableState<String> =  mutableStateOf("")
+
+    val filteredCountryList : MutableState<List<Country>> = mutableStateOf(emptyList())
 
     init {
         viewModelScope.launch {
@@ -79,8 +85,37 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         selectedCountryForUpdation.value = null // Clear the selected country
         showUpdateDialogAlert.value = false // Hide the dialog
 
-
-
     }
+
+    suspend fun filterCountryByContinent(){
+        isLoading.value = true
+        val filteredByContinent  = allCountries.value.filter { it.continents?.contains(filterByKey.value) ?: false }
+        Log.i("FilterCriteria", "Filtered by Continent ${filteredByContinent.size}")
+        filteredCountryList.value = filteredByContinent
+        filteredCountryList.value.let {
+            when {
+                it.isNotEmpty() -> {
+                    allCountries.value = it
+                    isLoading.value = false
+                }
+            }
+        }
+    }
+
+    suspend fun filterCountryByDriveSide(){
+        isLoading.value = true
+        val filteredByDriveSide   = allCountries.value.filter { it.car?.side?.equals(filterByKey.value) ?: false }
+        Log.i("FilterCriteria", "Filtered by Drive Side ${filteredByDriveSide.size}")
+        filteredCountryList.value = filteredByDriveSide
+        filteredCountryList.value.let {
+            when {
+                it.isNotEmpty() -> {
+                    allCountries.value = it
+                    isLoading.value = false
+                }
+            }
+        }
+    }
+
 
 }
