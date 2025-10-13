@@ -18,7 +18,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.countryinfoapp.components.CountryCard
 import com.example.countryinfoapp.dialog.MyAlertDialog
-import com.example.countryinfoapp.database.AppDataBase
+import com.example.countryinfoapp.database.appdb.AppDataBase
 import com.example.countryinfoapp.dialog.MyNewAlertDialog
 import com.example.countryinfoapp.repo.CountryRepository
 import com.example.countryinfoapp.ui.theme.CountryInfoAppTheme

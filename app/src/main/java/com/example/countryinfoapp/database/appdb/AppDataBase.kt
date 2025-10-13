@@ -1,4 +1,4 @@
-package com.example.countryinfoapp.database
+package com.example.countryinfoapp.database.appdb
 
 import android.content.Context
 import androidx.room.Database
@@ -6,17 +6,19 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.countryinfoapp.data.Country
+import com.example.countryinfoapp.database.Converters
+import com.example.countryinfoapp.database.dao.CountryDao
 
 @Database(entities = [Country::class], version = 1)
 @TypeConverters(Converters::class)
-abstract class AppDataBase : RoomDatabase() {
-    abstract fun countryDao(): CountryDao
+abstract class AppDataBase : RoomDatabase(), DatabaseProvider {
+    abstract override fun countryDao(): CountryDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDataBase? = null
 
-        fun getDatabase(context: Context): AppDataBase {
+        fun getDatabase(context: Context): DatabaseProvider {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
