@@ -60,6 +60,10 @@ class CountryRepository(private val context: Context,
             }
         }
 
+    override suspend fun filterCountries(criteria: FilterCriteria): List<Country> = withContext(dispatcher) {
+        return@withContext criteria.filter(allCountries)
+    }
+
 
 }
 
