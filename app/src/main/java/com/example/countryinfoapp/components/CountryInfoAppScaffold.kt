@@ -1,5 +1,6 @@
 package com.example.countryinfoapp.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -32,7 +34,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.countryinfoapp.database.appdb.AppDataBase
+import com.example.countryinfoapp.repo.CountryRepository
+import com.example.countryinfoapp.viewmodel.CountryViewModel
+import com.example.countryinfoapp.viewmodel.CountryViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +49,21 @@ import androidx.compose.ui.text.rememberTextMeasurer
 fun CountryInfoAppScaffold() {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+    val context = LocalContext.current
+    //Initialise Dao
+    val countryDao = AppDataBase.getDatabase(context.applicationContext)?.countryDao()
+    //Initialise the Repository
+    val countryRepository = countryDao?.let { CountryRepository(context, it) }
+
+    //Initialise the ViewModel
+    val viewModel: CountryViewModel =
+        viewModel(factory = countryRepository?.let { CountryViewModelFactory(repository = it) })
+
+    val selectedFilter = viewModel.selectedFilter
+    val filterByKey = viewModel.filterByKey
+
+    ObserveFilterKeyChanges(filterByKey, selectedFilter, viewModel)
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -79,17 +103,21 @@ fun CountryInfoAppScaffold() {
             )
         },
         bottomBar = {
-            BottomAppBar(
-                contentColor = Color.White // Default content color for this BottomAppBar
-            ) {
-                IconButton(onClick = { /* TODO: Handle sort action */ }) {
-                    Icon(
-                        // Assuming SortByAlpha is intended and resolving.
-                        // If not, change to Icons.Filled.Sort and ensure correct import.
-                        imageVector = Icons.Filled.SortByAlpha,
-                        contentDescription = "Sort",
-                        tint = Color.Black // Specific tint for this icon
-                        // This icon will use the BottomAppBar's contentColor (White)
+            BottomAppBar {
+                FilterCountryChips("Continent", selectedFilter)
+                FilterCountryChips("Drive Side", selectedFilter)
+
+                if (selectedFilter.value != null) {
+                    TextField(
+                        value = filterByKey.value,
+                        onValueChange = { newValue ->
+                            Log.d("CountryFilterDebug", "[onValueChange] TextField called with newValue='$newValue'")
+                            filterByKey.value = newValue
+                            // If you call any filtering function here, add a log for it as well
+                        },
+                        modifier = Modifier.padding(3.dp),
+                        label = { Text("") },
+                        singleLine = true,
                     )
                 }
             }

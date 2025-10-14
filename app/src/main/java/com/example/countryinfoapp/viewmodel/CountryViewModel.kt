@@ -7,11 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.countryinfoapp.data.Country
 import com.example.countryinfoapp.repo.CountryRepository
+import com.example.countryinfoapp.repo.FilterCriteria
+import com.example.countryinfoapp.repo.ICountryRepo
 import kotlinx.coroutines.launch
 
-class CountryViewModel(private val countryRepository: CountryRepository) : ViewModel() {
+class CountryViewModel(private val countryRepository: ICountryRepo) : ViewModel(),ICountryViewModel {
     // Update the capital of a country using selectedCountryForUpdation and countryMutableState
-    suspend fun updateCountry(newCapital: String) {
+    override suspend fun updateCountry(newCapital: String) {
         selectedCountryForUpdation?.let { countryMutableState ->
             countryMutableState.value?.let { country ->
                 countryRepository.updateCapital(country, newCapital)
@@ -19,7 +21,7 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         }
     }
 
-    val allCountries: MutableState<List<Country>> = mutableStateOf(emptyList())
+    override val allCountries: MutableState<List<Country>> = mutableStateOf(emptyList())
     val isLoading: MutableState<Boolean> = mutableStateOf(true)
 
     var selectedCountryForDeletion: MutableState<Country?> = mutableStateOf(null)
@@ -49,7 +51,7 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
         }
     }
 
-    private suspend fun getAllCountries() {
+    override suspend fun getAllCountries() {
         allCountries.value = countryRepository.getAllCountries()
     }
 
@@ -60,7 +62,7 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
     }
 
     // Call this when the user confirms the deletion in the dialog
-    suspend fun deleteCountry() {
+    override suspend fun deleteCountry() {
         selectedCountryForDeletion.value?.let { country ->
            countryRepository.deleteCountry(country)
         }
@@ -87,33 +89,11 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
 
     }
 
-    suspend fun filterCountryByContinent(){
-        isLoading.value = true
-        val filteredByContinent  = allCountries.value.filter { it.continents?.contains(filterByKey.value) ?: false }
-        Log.i("FilterCriteria", "Filtered by Continent ${filteredByContinent.size}")
-        filteredCountryList.value = filteredByContinent
-        filteredCountryList.value.let {
-            when {
-                it.isNotEmpty() -> {
-                    allCountries.value = it
-                    isLoading.value = false
-                }
-            }
-        }
-    }
+    override suspend fun filterCountries(filterCriteria: FilterCriteria) {
+        filterCriteria?.let {
+            allCountries.value = countryRepository.filterCountries(filterCriteria)
 
-    suspend fun filterCountryByDriveSide(){
-        isLoading.value = true
-        val filteredByDriveSide   = allCountries.value.filter { it.car?.side?.equals(filterByKey.value) ?: false }
-        Log.i("FilterCriteria", "Filtered by Drive Side ${filteredByDriveSide.size}")
-        filteredCountryList.value = filteredByDriveSide
-        filteredCountryList.value.let {
-            when {
-                it.isNotEmpty() -> {
-                    allCountries.value = it
-                    isLoading.value = false
-                }
-            }
+
         }
     }
 
