@@ -8,12 +8,14 @@ import androidx.compose.runtime.getValue
 import com.example.countryinfoapp.repo.FilterByContinent
 import com.example.countryinfoapp.repo.FilterByDriveSide
 import com.example.countryinfoapp.repo.FilterCriteria
+import com.example.countryinfoapp.util.FilterCriteriaFactoryProvider
 import com.example.countryinfoapp.viewmodel.CountryViewModel
+import com.example.countryinfoapp.viewmodel.ICountryViewModel
 
 @Composable
 fun ObserveFilterKeyChanges(filterByKey: MutableState<String>,
                             selectedFilter: MutableState<String?>,
-                            viewModelCountryOps: CountryViewModel
+                            viewModelCountryOps: ICountryViewModel
 ) {
     val filterKey by filterByKey
     val selectedFilterValue by selectedFilter
@@ -31,15 +33,14 @@ fun ObserveFilterKeyChanges(filterByKey: MutableState<String>,
 suspend fun filterBy(
     filterKey: String,
     selectedFilterValue: String?,
-    viewModelCountryOps: CountryViewModel
+    viewModelCountryOps: ICountryViewModel
 ) {
     Log.d("CountryFilterDebug", "[filterBy] Called with filterKey='$filterKey', selectedFilterValue='$selectedFilterValue'")
     if (filterKey.isNotEmpty()) {
-        val filterCriteria = determineFilterCriteria(selectedFilterValue!!, filterKey)
-        Log.d("CountryFilterDebug", "[filterBy] filterCriteria='${filterCriteria?.javaClass?.simpleName}', filterKey='$filterKey'")
+        val factor = FilterCriteriaFactoryProvider.getFactory(selectedFilterValue!!)
+        val filterCriteria = factor?.createFilterCriteria(filterKey)
         filterCriteria?.let {
-            Log.d("CountryFilterDebug", "[filterBy] Calling viewModelCountryOps.filterCountries with criteria='$it'")
-            viewModelCountryOps.filterCountries(it as FilterCriteria)
+            viewModelCountryOps.filterCountries(it)
         }
     } else {
         Log.d("CountryFilterDebug", "[filterBy] filterKey is empty, calling getAllCountries()")
